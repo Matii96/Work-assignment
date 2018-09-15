@@ -1,4 +1,4 @@
-Algorithm for assigning tasks to employees. Usage:
+Algorithm for assigning tasks to employees for python 3.6. Usage:
 
 Input:
     workers_limits:       [465, 180, ...]  workers work time limits
