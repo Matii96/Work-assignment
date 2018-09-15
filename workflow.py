@@ -3,16 +3,6 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance_original, workers_limits, item_demand):
-    '''
-    Input:
-        workers_limits:       [465, 180, ...]  workers work time limits
-        item_demand:          [12, 7, ...]     how many each item is demanded
-        performance_original: [[20.629, 12.252, ...], [17.849, 29.371, ...], ...] performance of each worker with each item
-    Output:
-        plan:                 [9, 8, ...]      how many each type of item each worker is ordered to prepare
-        item_demand:          [3, 0, ...]      how many items left
-    '''
-
     #Checking passed parameters
     items_count = len(item_demand)
     workers_count = len(performance_original)

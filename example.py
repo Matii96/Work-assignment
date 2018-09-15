@@ -194,7 +194,7 @@ for i in range(0, len(plan)):
         print('    %s: %d' % (meble[j], plan[i][j]))
         wyprodukowane[j] += plan[i][j]
 
-print('Wyprodukowane / pozostale:')
+print('Stworzone / pozostale:')
 for i in range(0, len(sztuki)):
     print('%s: %d / %d' % (sztuki[i], wyprodukowane[i], pozostale[i]))
 
