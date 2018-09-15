@@ -1,4 +1,4 @@
-Procedure for assigning tasks to employees for python 3.6 based on hungarian algorithm.
+Procedure for assigning tasks to employees for python 3.6 based on Hungarian algorithm.
 Requires scipy package.
 Usage:
 
