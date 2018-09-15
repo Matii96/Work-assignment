@@ -2,21 +2,21 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def association(performance_original, workers_limits, item_demand):
+def association(performance_original, workers_limit, item_demand):
     #Checking passed parameters
     items_count = len(item_demand)
     workers_count = len(performance_original)
-    if workers_count != len(workers_limits):
-        raise ValueError('Workers count in performance_original does not match workers_limits')
+    if workers_count != len(workers_limit):
+        raise ValueError('Workers count in performance_original does not match workers_limit')
     for worker in range(0, workers_count):
         if len(performance_original[worker]) != items_count:
             raise ValueError('items count in performance_original does not match item_demand')
 
     #Utility variables
-    workers_limits = workers_limits.copy()
+    workers_limit = workers_limit.copy()
     item_demand = item_demand.copy()
     performance = []
-    general_plan = []
+    sheudle = []
     overworked_time = []
     cost_array_last = np.array([])
     result_workers_last, result_assignments_last = [], []
@@ -34,11 +34,11 @@ def association(performance_original, workers_limits, item_demand):
     performance_threshold += 1
 
     #Preparing array of planned activities
-    for worker in workers_limits:
-        worker_plan = []
+    for worker in workers_limit:
+        worker_sheudle = []
         for item in item_demand:
-            worker_plan.append(0)
-        general_plan.append(worker_plan)
+            worker_sheudle.append(0)
+        sheudle.append(worker_sheudle)
         overworked_time.append(0)
 
     #Iterating over assignment turns
@@ -53,7 +53,7 @@ def association(performance_original, workers_limits, item_demand):
 
         #No more items to do
         if len(items_in_turn) == 0:
-            return general_plan, item_demand, overworked_time
+            return sheudle, item_demand, overworked_time
 
         #Iterating over items in turn
         while len(items_in_turn) > 0:
@@ -63,24 +63,24 @@ def association(performance_original, workers_limits, item_demand):
             for worker in range(0, workers_count):
 
                 #Omitting workers with no time for anything
-                if workers_limits[worker] == -1:
+                if workers_limit[worker] == -1:
                     continue
 
                 remove_worker = True
-                free_time = workers_limits[worker] - overworked_time[worker]
+                free_time = workers_limit[worker] - overworked_time[worker]
                 for item in range(0, items_count):
                     if performance[worker][item] > free_time:
                         performance[worker][item] = performance_threshold
                     if performance[worker][item] < performance_threshold:
                         remove_worker = False
 
-                #In case of no time for anything mark it in workers_limits
+                #In case of no time for anything mark it in workers_limit
                 if remove_worker:
-                    workers_limits[worker] = -1
+                    workers_limit[worker] = -1
 
             #No more free workers to do any task
-            if all(limit == -1 for limit in workers_limits):
-                return general_plan, item_demand, overworked_time
+            if all(limit == -1 for limit in workers_limit):
+                return sheudle, item_demand, overworked_time
 
             #Generating cost array to optimise
             #Each row is list of performances of current worker with each demanded item in turn
@@ -90,7 +90,7 @@ def association(performance_original, workers_limits, item_demand):
             for worker in range(0, workers_count):
 
                 #Omitting workers with no time for anything
-                if workers_limits[worker] == -1:
+                if workers_limit[worker] == -1:
                     continue
 
                 #Checking if worker has time for any of items left in turn
@@ -108,7 +108,7 @@ def association(performance_original, workers_limits, item_demand):
 
                 #Check for repeated situation that indicates loop stuck
                 if lockup:
-                    return general_plan, item_demand, overworked_time
+                    return sheudle, item_demand, overworked_time
                 lockup = True
                 break
 
@@ -141,7 +141,7 @@ def association(performance_original, workers_limits, item_demand):
                 if performance[current_worker][current_item] < performance_threshold:
 
                     #Adding item to worker
-                    general_plan[current_worker][current_item] += 1
+                    sheudle[current_worker][current_item] += 1
 
                     #Marking item for delete
                     items_in_turn[result_assignments[key]] = -1

@@ -5,7 +5,7 @@ import numpy as np
 import time
 import math
 
-pracownicy = [
+workers = [
     'p100000179',
     'p100000125',
     'p100000151',
@@ -17,7 +17,7 @@ pracownicy = [
     'p100000185',
     'p100000320'
 ]
-limit = [
+workers_limit = [
     465,
     465,
     465,
@@ -29,7 +29,7 @@ limit = [
     465,
     465
 ]
-meble = [
+items = [
     'm210',
     'm211',
     'm212',
@@ -41,7 +41,7 @@ meble = [
     'm218',
     'm219',
 ]
-sztuki = [
+item_demand = [
     200,
     24,
     17,
@@ -53,7 +53,7 @@ sztuki = [
     18,
     29
 ]
-wydajnosc = [
+performance = [
     [
             88.9200,
             95.8226,
@@ -176,26 +176,24 @@ wydajnosc = [
     ]
 ]
 
-print('Rozpoczęto optymalizację...')
+print('Optimization has begun...')
 beginning = time.time()
-plan, pozostale, przepracowane = association(wydajnosc, limit, sztuki)
+sheudle, remains, work_time = association(performance, workers_limit, item_demand)
 elapsed_time = time.time() - beginning
 
 #Debug
-wyprodukowane = []
-for mebel in meble:
-    wyprodukowane.append(0)
+done = []
+for mebel in items:
+    done.append(0)
 
-for i in range(0, len(plan)):
-    minuty, godziny = math.modf(przepracowane[i] / 60)
-    #print('%s (%d:%02d):' % (pracownicy[i], godziny, minuty * 60))
-    print('%s (%.0f/%.0f):' % (pracownicy[i], przepracowane[i], limit[i]))
-    for j in range(0, len(plan[i])):
-        print('    %s: %d' % (meble[j], plan[i][j]))
-        wyprodukowane[j] += plan[i][j]
+for i in range(0, len(sheudle)):
+    print('%s (%.0f/%.0f):' % (workers[i], work_time[i], workers_limit[i]))
+    for j in range(0, len(sheudle[i])):
+        print('    %s: %d' % (items[j], sheudle[i][j]))
+        done[j] += sheudle[i][j]
 
-print('Stworzone / pozostale:')
-for i in range(0, len(sztuki)):
-    print('%s: %d / %d' % (sztuki[i], wyprodukowane[i], pozostale[i]))
+print('Done / remaining:')
+for i in range(0, len(item_demand)):
+    print('%s: %d / %d' % (item_demand[i], done[i], remains[i]))
 
-print('Czas optymalizowania: %.3fs' % elapsed_time)
+print('Elapsed time: %.3fs' % elapsed_time)
