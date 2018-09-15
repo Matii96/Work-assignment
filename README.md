@@ -1,4 +1,6 @@
-Algorithm for assigning tasks to employees for python 3.6. Usage:
+Procedure for assigning tasks to employees for python 3.6 based on hungarian algorithm.
+Requires scipy package.
+Usage:
 
 Input:
     workers_limits:       [465, 180, ...]  workers work time limits
