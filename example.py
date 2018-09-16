@@ -5,18 +5,6 @@ import numpy as np
 import time
 import math
 
-workers = [
-    'p100000179',
-    'p100000125',
-    'p100000151',
-    'p100000181',
-    'p100000154',
-    'p100000127',
-    'p100000165',
-    'p100000139',
-    'p100000185',
-    'p100000320'
-]
 workers_limit = [
     465,
     465,
@@ -28,18 +16,6 @@ workers_limit = [
     465,
     465,
     465
-]
-items = [
-    'm210',
-    'm211',
-    'm212',
-    'm213',
-    'm214',
-    'm215',
-    'm216',
-    'm217',
-    'm218',
-    'm219',
 ]
 item_demand = [
     200,
@@ -181,9 +157,34 @@ beginning = time.time()
 sheudle, remains, work_time = association(performance, workers_limit, item_demand)
 elapsed_time = time.time() - beginning
 
-#Debug
+#Display
+workers = [
+    'p100000179',
+    'p100000125',
+    'p100000151',
+    'p100000181',
+    'p100000154',
+    'p100000127',
+    'p100000165',
+    'p100000139',
+    'p100000185',
+    'p100000320'
+]
+items = [
+    'm210',
+    'm211',
+    'm212',
+    'm213',
+    'm214',
+    'm215',
+    'm216',
+    'm217',
+    'm218',
+    'm219',
+]
+
 done = []
-for mebel in items:
+for item in items:
     done.append(0)
 
 for i in range(0, len(sheudle)):
@@ -194,6 +195,6 @@ for i in range(0, len(sheudle)):
 
 print('Done / remaining:')
 for i in range(0, len(item_demand)):
-    print('%s: %d / %d' % (item_demand[i], done[i], remains[i]))
+    print('%s: %d / %d' % (items[i], done[i], remains[i]))
 
 print('Elapsed time: %.3fs' % elapsed_time)

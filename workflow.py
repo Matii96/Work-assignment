@@ -3,9 +3,10 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance_original, workers_limit, item_demand):
-    #Checking passed parameters
     items_count = len(item_demand)
     workers_count = len(performance_original)
+    
+    #Checking passed parameters
     if workers_count != len(workers_limit):
         raise ValueError('Workers count in performance_original does not match workers_limit')
     for worker in range(0, workers_count):
