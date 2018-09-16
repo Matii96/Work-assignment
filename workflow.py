@@ -126,9 +126,9 @@ def association(performance_original, workers_limit, item_demand):
             else:
 
                 #Arrays are different, launching new optimisation
-                cost_array_last = np.copy(cost_array)
+                cost_array_last = cost_array
                 result_workers, result_assignments = linear_sum_assignment(cost_array)
-                result_workers_last, result_assignments_last = result_workers.copy(), result_assignments.copy()
+                result_workers_last, result_assignments_last = result_workers, result_assignments
 
             #print('cost:', np.array(cost)[result_workers, result_assignments].sum())
 
