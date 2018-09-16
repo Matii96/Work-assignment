@@ -5,13 +5,13 @@ import numpy as np
 def association(performance_original, workers_limit, item_demand):
     items_count = len(item_demand)
     workers_count = len(performance_original)
-    
+
     #Checking passed parameters
     if workers_count != len(workers_limit):
-        raise ValueError('Workers count in performance_original does not match workers_limit')
+        raise ValueError('Workers count in performance array does not match workers limits')
     for worker in range(0, workers_count):
         if len(performance_original[worker]) != items_count:
-            raise ValueError('items count in performance_original does not match item_demand')
+            raise ValueError('Items count in performance array does not match items demand')
 
     #Utility variables
     workers_limit = workers_limit.copy()
