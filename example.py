@@ -154,7 +154,7 @@ performance = [
 
 print('Optimization has begun...')
 beginning = time.time()
-sheudle, remains, work_time = association(performance, workers_limit, item_demand)
+sheudle, work_time, remains = association(performance, workers_limit, item_demand)
 elapsed_time = time.time() - beginning
 
 #Display

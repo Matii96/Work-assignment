@@ -54,7 +54,7 @@ def association(performance_original, workers_limit, item_demand):
 
         #No more items to do
         if len(items_in_turn) == 0:
-            return sheudle, item_demand, overworked_time
+            return sheudle, overworked_time, item_demand
 
         #Iterating over items in turn
         while len(items_in_turn) > 0:
@@ -81,7 +81,7 @@ def association(performance_original, workers_limit, item_demand):
 
             #No more free workers to do any task
             if all(limit == -1 for limit in workers_limit):
-                return sheudle, item_demand, overworked_time
+                return sheudle, overworked_time, item_demand
 
             #Generating cost array to optimise
             #Each row is list of performances of current worker with each demanded item in turn
@@ -109,7 +109,7 @@ def association(performance_original, workers_limit, item_demand):
 
                 #Check for repeated situation that indicates loop stuck
                 if lockup:
-                    return sheudle, item_demand, overworked_time
+                    return sheudle, overworked_time, item_demand
                 lockup = True
                 break
 
