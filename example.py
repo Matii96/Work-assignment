@@ -193,7 +193,7 @@ for i in range(0, len(sheudle)):
         print('    %s: %d' % (items[j], sheudle[i][j]))
         done[j] += sheudle[i][j]
 
-print('Done / remaining:')
+print('Item: done / remaining:')
 for i in range(0, len(item_demand)):
     print('%s: %d / %d' % (items[i], done[i], remains[i]))
 
