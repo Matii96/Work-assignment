@@ -1,6 +1,5 @@
 #Import the toolbox
 from workflow import association
-import numpy as np
 import time
 import math
 
