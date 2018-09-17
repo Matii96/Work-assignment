@@ -1,5 +1,4 @@
 #Import the toolbox
-from scipy.optimize import linear_sum_assignment
 from workflow import association
 import numpy as np
 import time
