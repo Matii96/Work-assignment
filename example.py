@@ -1,8 +1,8 @@
 #Import the toolbox
 from workflow import association
-import time
-import math
+from time import time
 
+#Test data
 workers_limit = [
     465,
     465,
@@ -40,9 +40,9 @@ performance = [
 ]
 
 print('Optimization has begun...')
-beginning = time.time()
+beginning = time()
 sheudle, work_time, remains = association(performance, workers_limit, item_demand)
-elapsed_time = time.time() - beginning
+elapsed_time = time() - beginning
 
 #Display
 workers = [
