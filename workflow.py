@@ -3,6 +3,38 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance_original, workers_limit, item_demand):
+    #First try, multiple sample
+    sheudle_first, work_time_first, remains_first = _association_attempt(performance_original, workers_limit, item_demand)
+
+    #Second try, single sample
+    sheudle_second, work_time_second, remains_second = _association_attempt(performance_original, workers_limit, item_demand, True)
+
+    #Comparing remaining items count, smaller wins
+    remains_first_total = 0
+    for count in remains_first:
+        remains_first_total += count
+    remains_second_total = 0
+    for count in remains_second:
+        remains_second_total += count
+    if remains_first_total < remains_second_total:
+        return sheudle_first, work_time_first, remains_first
+    elif remains_first_total > remains_second_total:
+        return sheudle_second, work_time_second, remains_second
+
+    #Comparing work times, shorter wins
+    work_time_first_total = 0
+    for time in work_time_first:
+        work_time_first_total += time
+    work_time_second_total = 0
+    for time in work_time_second:
+        work_time_second_total += time
+    if work_time_first_total < work_time_second_total:
+        return sheudle_first, work_time_first, remains_first
+
+    #Both cases are the same
+    return sheudle_second, work_time_second, remains_second
+
+def _association_attempt(performance_original, workers_limit, item_demand, single_sample = False):
     items_count = len(item_demand)
     workers_count = len(performance_original)
 
@@ -131,6 +163,20 @@ def association(performance_original, workers_limit, item_demand):
                 result_workers_last, result_assignments_last = result_workers, result_assignments
 
             #print('cost:', np.array(cost)[result_workers, result_assignments].sum())
+
+            #EPERIMENTAL
+            if single_sample:
+                key = 0
+                time_min = performance_threshold
+                for i in range(0, len(result_assignments)):
+                    current_worker = workers_in_turn[result_workers[i]]
+                    current_item = items_in_turn[result_assignments[i]]
+
+                    if performance[current_worker][current_item] < time_min:
+                        time_min = performance[current_worker][current_item]
+                        key = i
+                result_workers = [result_workers[key]]
+                result_assignments = [result_assignments[key]]
 
             #Reading result of optimisations
             for key in range(0, len(result_assignments)):
