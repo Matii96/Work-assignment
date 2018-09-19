@@ -16,11 +16,11 @@ def association(performance_original, workers_limit, item_demand):
     #Utility variables
     workers_limit = workers_limit.copy()
     item_demand = item_demand.copy()
-    performance = []
-    sheudle = []
-    overworked_time = []
     cost_array_last = np.array([])
     result_workers_last, result_assignments_last = [], []
+    overworked_time = []
+    performance = []
+    sheudle = []
 
     #Copying performance array to prevent interfering into its values
     for worker_performance in performance_original:
