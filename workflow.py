@@ -3,7 +3,7 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance, workers_limit, item_demand):
-
+    
     #Checking passed parameters
     if len(performance) != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
@@ -39,11 +39,11 @@ def association(performance, workers_limit, item_demand):
     if work_time_first_total < work_time_second_total:
         return sheudle_first, work_time_first, remains_first
 
-    #Both cases are the same
+    #Second case is better or both are the same
     return sheudle_second, work_time_second, remains_second
 
 def _association_attempt(performance_original, workers_limit, item_demand, single_sample = False):
-    
+
     #Utility variables
     items_count = len(item_demand)
     workers_count = len(performance_original)
