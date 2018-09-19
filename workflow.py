@@ -16,13 +16,11 @@ def association(performance_original, workers_limit, item_demand):
     #Utility variables
     workers_limit = workers_limit.copy()
     item_demand = item_demand.copy()
-    cost_array_last = np.array([])
-    overworked_time = [0] * workers_count
-    result_workers_last, result_assignments_last = [], []
     performance = []
-
-    #Array of planned activities
-    sheudle = [[0] * items_count] * workers_count
+    sheudle = []
+    overworked_time = []
+    cost_array_last = np.array([])
+    result_workers_last, result_assignments_last = [], []
 
     #Copying performance array to prevent interfering into its values
     for worker_performance in performance_original:
@@ -35,6 +33,14 @@ def association(performance_original, workers_limit, item_demand):
         for item in range(0, items_count):
             performance_threshold = max(performance_threshold, performance[worker][item])
     performance_threshold += 1
+
+    #Preparing array of planned activities
+    for worker in workers_limit:
+        worker_sheudle = []
+        for item in item_demand:
+            worker_sheudle.append(0)
+        sheudle.append(worker_sheudle)
+        overworked_time.append(0)
 
     #Iterating over assignment turns
     #Each turn consists of single example of each item
