@@ -3,6 +3,14 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance, workers_limit, item_demand):
+
+    #Checking passed parameters
+    if len(performance) != len(workers_limit):
+        raise ValueError('Workers count in performance array does not match workers limits')
+    for worker in range(0, len(performance)):
+        if len(performance[worker]) != len(item_demand):
+            raise ValueError('Items count in performance array does not match items demand')
+
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
 
@@ -35,17 +43,10 @@ def association(performance, workers_limit, item_demand):
     return sheudle_second, work_time_second, remains_second
 
 def _association_attempt(performance_original, workers_limit, item_demand, single_sample = False):
+    
+    #Utility variables
     items_count = len(item_demand)
     workers_count = len(performance_original)
-
-    #Checking passed parameters
-    if workers_count != len(workers_limit):
-        raise ValueError('Workers count in performance array does not match workers limits')
-    for worker in range(0, workers_count):
-        if len(performance_original[worker]) != items_count:
-            raise ValueError('Items count in performance array does not match items demand')
-
-    #Utility variables
     workers_limit = workers_limit.copy()
     item_demand = item_demand.copy()
     cost_array_last = np.array([])
