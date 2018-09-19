@@ -2,12 +2,12 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def association(performance_original, workers_limit, item_demand):
+def association(performance, workers_limit, item_demand):
     #First try, multiple sample
-    sheudle_first, work_time_first, remains_first = _association_attempt(performance_original, workers_limit, item_demand)
+    sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
 
     #Second try, single sample
-    sheudle_second, work_time_second, remains_second = _association_attempt(performance_original, workers_limit, item_demand, True)
+    sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
 
     #Comparing remaining items count, smaller wins
     remains_first_total = 0
