@@ -1,5 +1,6 @@
 #Import the toolbox
 from scipy.optimize import linear_sum_assignment
+from multiprocessing.pool import ThreadPool
 import numpy as np
 
 def association(performance, workers_limit, item_demand, lightweight_approach = False):
@@ -14,11 +15,18 @@ def association(performance, workers_limit, item_demand, lightweight_approach = 
     if lightweight_approach:
         return _association_attempt(performance, workers_limit, item_demand)
 
+    #Preparing 2 threads for attempts
+    #pool = ThreadPool(processes=1)
+
     #First try, multiple sample
-    sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
+    first_attempt = ThreadPool(processes=1).apply_async(_association_attempt, (performance, workers_limit, item_demand))
 
     #Second try, single sample
-    sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
+    second_attempt = ThreadPool(processes=1).apply_async(_association_attempt, (performance, workers_limit, item_demand, True))
+
+    #Getting results
+    sheudle_first, work_time_first, remains_first = first_attempt.get()
+    sheudle_second, work_time_second, remains_second = second_attempt.get()
 
     #Comparing remaining items count, smaller wins
     remains_first_total = 0
