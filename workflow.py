@@ -3,7 +3,7 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance, workers_limit, item_demand):
-    
+    return _association_attempt(performance, workers_limit, item_demand)
     #Checking passed parameters
     if len(performance) != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
@@ -165,7 +165,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
             #print('cost:', np.array(cost)[result_workers, result_assignments].sum())
 
-            #EPERIMENTAL
+            #EXPERIMENTAL
             if single_sample:
                 key = 0
                 time_min = performance_threshold
