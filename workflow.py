@@ -2,14 +2,17 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def association(performance, workers_limit, item_demand):
-    return _association_attempt(performance, workers_limit, item_demand)
+def association(performance, workers_limit, item_demand, lightweight_approach = False):
     #Checking passed parameters
     if len(performance) != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
     for worker in range(0, len(performance)):
         if len(performance[worker]) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
+
+    #This method may not give the best result with small amount of data but is significantly faster
+    if lightweight_approach:
+        return _association_attempt(performance, workers_limit, item_demand)
 
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
