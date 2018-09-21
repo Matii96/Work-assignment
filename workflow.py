@@ -2,7 +2,7 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def association(performance, workers_limit, item_demand, lightweight_approach = False):
+def association(performance, workers_limit, item_demand):
     #Checking passed parameters
     if len(performance) != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
@@ -10,12 +10,28 @@ def association(performance, workers_limit, item_demand, lightweight_approach = 
         if len(performance[worker]) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
 
-    #This method may not give the best result with small amount of data but is significantly faster
-    if lightweight_approach:
-        return _association_attempt(performance, workers_limit, item_demand)
-
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
+
+    #If there are any items left then result is already the best
+    for item_count in remains_first:
+        if item_count > 0:
+            return sheudle_first, work_time_first, remains_first
+
+    #Checking if any worker has free time left
+    #If so then result must be compared to second attempt
+    workers_fully_occupied = True
+    for worker in range(0, len(performance)):
+        for item in range(0, len(performance[worker])):
+            if work_time_first[worker] + performance[worker][item] <= workers_limit[worker]:
+                workers_fully_occupied = False
+                break
+        if not workers_fully_occupied:
+            break
+
+    #If no worker has time for anything that is left then result is already the best
+    if workers_fully_occupied:
+        return sheudle_first, work_time_first, remains_first
 
     #Second try, single sample
     sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
