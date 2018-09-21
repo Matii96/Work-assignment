@@ -184,7 +184,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
             #print('cost:', np.array(cost)[result_workers, result_assignments].sum())
 
-            #EXPERIMENTAL
+            #Instead of assigning all worker in turn just one with best performance is chosen
             if single_sample:
                 key = 0
                 time_min = performance_threshold
