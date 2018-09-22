@@ -14,7 +14,9 @@ def association(performance, workers_limit, item_demand):
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
 
     #If there are any items left then result is already the best
+    remains_first_total = 0
     for item_count in remains_first:
+        remains_first_total += item_count
         if item_count > 0:
             return sheudle_first, work_time_first, remains_first
 
@@ -37,9 +39,6 @@ def association(performance, workers_limit, item_demand):
     sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
 
     #Comparing remaining items count, smaller wins
-    remains_first_total = 0
-    for count in remains_first:
-        remains_first_total += count
     remains_second_total = 0
     for count in remains_second:
         remains_second_total += count
@@ -180,23 +179,26 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
                 #Arrays are different, launching new optimisation
                 cost_array_last = cost_array
                 result_workers, result_assignments = linear_sum_assignment(cost_array)
+
+                #Instead of assigning all worker in turn just one with best performance is chosen
+                #This method is NOT performance friendly but gives better result when no all worker are fully occupied
+                if single_sample:
+                    key = 0
+                    time_min = performance_threshold
+                    for i in range(0, len(result_assignments)):
+                        current_worker = workers_in_turn[result_workers[i]]
+                        current_item = items_in_turn[result_assignments[i]]
+
+                        if performance[current_worker][current_item] < time_min:
+                            time_min = performance[current_worker][current_item]
+                            key = i
+                    result_workers = [result_workers[key]]
+                    result_assignments = [result_assignments[key]]
+
+                #Saving data from current turn for the next one
                 result_workers_last, result_assignments_last = result_workers, result_assignments
 
             #print('cost:', np.array(cost)[result_workers, result_assignments].sum())
-
-            #Instead of assigning all worker in turn just one with best performance is chosen
-            if single_sample:
-                key = 0
-                time_min = performance_threshold
-                for i in range(0, len(result_assignments)):
-                    current_worker = workers_in_turn[result_workers[i]]
-                    current_item = items_in_turn[result_assignments[i]]
-
-                    if performance[current_worker][current_item] < time_min:
-                        time_min = performance[current_worker][current_item]
-                        key = i
-                result_workers = [result_workers[key]]
-                result_assignments = [result_assignments[key]]
 
             #Reading result of optimisations
             for key in range(0, len(result_assignments)):
