@@ -64,7 +64,6 @@ performance = [
     ]
 ]
 
-
 print('Optimization has begun...')
 beginning = time()
 sheudle, work_time, remains = association(performance, workers_limit, item_demand)

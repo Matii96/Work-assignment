@@ -99,7 +99,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
     while True:
         #Generating requirement for turn considering demands
         items_in_turn = []
-        for item in range(0, len(item_demand)):
+        for item in range(0, items_count):
             if item_demand[item] > 0:
                 items_in_turn.append(item)
 
