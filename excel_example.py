@@ -1,6 +1,5 @@
 #Import the toolbox
 import sys
-from workflow import association
 from xlrd import open_workbook
 
 if len(sys.argv) != 2:
