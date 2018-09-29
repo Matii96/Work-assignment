@@ -3,12 +3,19 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance, workers_limit, item_demand):
+    workers_count = len(performance)
+
     #Checking passed parameters
-    if len(performance) != len(workers_limit):
+    if workers_count != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
-    for worker in range(0, len(performance)):
+    for worker in range(0, workers_count):
         if len(performance[worker]) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
+
+            #Checking values in performance array
+            for item in performance[worker]:
+                if item <= 0:
+                    raise ValueError('All performance values must be positive')
 
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
@@ -23,7 +30,7 @@ def association(performance, workers_limit, item_demand):
     #Checking if any worker has free time left
     #If so then result must be compared to second attempt
     workers_fully_occupied = True
-    for worker in range(0, len(performance)):
+    for worker in range(0, workers_count):
         for item in range(0, len(performance[worker])):
             if work_time_first[worker] + performance[worker][item] <= workers_limit[worker]:
                 workers_fully_occupied = False
