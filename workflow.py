@@ -8,14 +8,14 @@ def association(performance, workers_limit, item_demand):
     #Checking passed parameters
     if workers_count != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
-    for worker in range(0, workers_count):
-        if len(performance[worker]) != len(item_demand):
+    for worker_performance in performance:
+        if len(worker_performance) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
 
-            #Checking values in performance array
-            for item in performance[worker]:
-                if item <= 0:
-                    raise ValueError('All performance values must be positive')
+        #Checking values in performance array
+        for item in worker_performance:
+            if item <= 0:
+                raise ValueError('All performance values must be positive')
 
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
