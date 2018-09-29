@@ -115,7 +115,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
             for worker in range(0, workers_count):
 
                 #Omitting workers with no time for anything
-                if workers_limit[worker] == -1:
+                if workers_limit[worker] < 0:
                     continue
 
                 remove_worker = True
@@ -131,7 +131,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
                     workers_limit[worker] = -1
 
             #No more free workers to do any task
-            if all(limit == -1 for limit in workers_limit):
+            if all(limit < 0 for limit in workers_limit):
                 return sheudle, overworked_time, item_demand
 
             #Generating cost array to optimise
@@ -142,7 +142,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
             for worker in range(0, workers_count):
 
                 #Omitting workers with no time for anything
-                if workers_limit[worker] == -1:
+                if workers_limit[worker] < 0:
                     continue
 
                 #Checking if worker has time for any of items left in turn
