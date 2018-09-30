@@ -3,10 +3,9 @@ from scipy.optimize import linear_sum_assignment
 import numpy as np
 
 def association(performance, workers_limit, item_demand):
-    workers_count = len(performance)
 
     #Checking passed parameters
-    if workers_count != len(workers_limit):
+    if len(performance) != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
     for worker_performance in performance:
         if len(worker_performance) != len(item_demand):
@@ -19,33 +18,14 @@ def association(performance, workers_limit, item_demand):
 
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
-
-    #If there are any items left then result is already the best
-    remains_first_total = 0
-    for item_count in remains_first:
-        remains_first_total += item_count
-        if item_count > 0:
-            return sheudle_first, work_time_first, remains_first
-
-    #Checking if any worker has free time left
-    #If so then result must be compared to second attempt
-    workers_fully_occupied = True
-    for worker in range(0, workers_count):
-        for item in range(0, len(performance[worker])):
-            if work_time_first[worker] + performance[worker][item] <= workers_limit[worker]:
-                workers_fully_occupied = False
-                break
-        if not workers_fully_occupied:
-            break
-
-    #If no worker has time for anything that is left then result is already the best
-    if workers_fully_occupied:
-        return sheudle_first, work_time_first, remains_first
-
+    
     #Second try, single sample
     sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
 
     #Comparing remaining items count, smaller wins
+    remains_first_total = 0
+    for item_count in remains_first:
+        remains_first_total += item_count
     remains_second_total = 0
     for count in remains_second:
         remains_second_total += count
