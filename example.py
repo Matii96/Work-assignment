@@ -1,5 +1,5 @@
 #Import the toolbox
-from workflow import association
+from association import association
 from time import time
 import numpy as np
 
