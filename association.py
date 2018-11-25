@@ -11,14 +11,9 @@ def association(performance, workers_limit, item_demand):
         if len(worker_performance) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
 
-        #Checking values in performance array
-        for item in worker_performance:
-            if item <= 0:
-                raise ValueError('All performance values must be positive')
-
     #First try, multiple sample
     sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
-    
+
     #Second try, single sample
     sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
 
@@ -60,17 +55,22 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
     performance = []
     sheudle = []
 
-    #Copying performance array to prevent interfering into its values
-    for worker_performance in performance_original:
-        performance.append(worker_performance.copy())
-
     #Just for convenience
     #Saving highest performance value for further operations as threshold
     performance_threshold = 0
     for worker in range(0, workers_count):
         for item in range(0, items_count):
-            performance_threshold = max(performance_threshold, performance[worker][item])
+            performance_threshold = max(performance_threshold, performance_original[worker][item])
     performance_threshold += 1
+
+    #Copying performance array to prevent interfering into its values
+    for worker_performance in performance_original:
+
+        #Check each item for <=0 values, indicating that worker can't do this
+        for item in range(0, items_count):
+            if worker_performance[item] <= 0:
+                worker_performance[item] = performance_threshold
+        performance.append(worker_performance.copy())
 
     #Preparing array of planned activities
     for worker in workers_limit:
