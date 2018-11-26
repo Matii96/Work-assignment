@@ -52,6 +52,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
         for item in range(0, items_count):
             performance_threshold = max(performance_threshold, performance_original[worker][item])
     performance_threshold += 1
+    performance_threshold = max(performance_threshold, 1)
 
     #Copying performance array to prevent interfering into its values
     for worker_performance in performance_original:
