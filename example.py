@@ -1,4 +1,4 @@
-#Import the toolbox
+#from association_single_threaded import association
 from association import association
 from time import time
 import numpy as np
@@ -49,6 +49,7 @@ for item_count in remains:
 print('Sheudle saved to result.txt')
 print('Items remaining: %d' % remains_total)
 print('Total work time: %.0f' % work_time_total)
+print('Items left: %d' % remains_total)
 print('Elapsed time:    %.3fs' % elapsed_time)
 
 #Saving sheudle to result.txt

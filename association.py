@@ -32,25 +32,15 @@ def association(performance, workers_limit, item_demand):
     sheudle_second, work_time_second, remains_second = association_result[1]
 
     #Comparing remaining items count, smaller wins
-    remains_first_total = 0
-    for item_count in remains_first:
-        remains_first_total += item_count
-    remains_second_total = 0
-    for count in remains_second:
-        remains_second_total += count
-    if remains_first_total < remains_second_total:
+    remains_first_sum = sum(remains_first)
+    remains_second_sum = sum(remains_second)
+    if remains_first_sum < remains_second_sum:
         return sheudle_first, work_time_first, remains_first
-    elif remains_first_total > remains_second_total:
+    elif remains_first_sum > remains_second_sum:
         return sheudle_second, work_time_second, remains_second
 
     #Comparing work times, shorter wins
-    work_time_first_total = 0
-    for time in work_time_first:
-        work_time_first_total += time
-    work_time_second_total = 0
-    for time in work_time_second:
-        work_time_second_total += time
-    if work_time_first_total < work_time_second_total:
+    if sum(work_time_first) < sum(work_time_second):
         return sheudle_first, work_time_first, remains_first
 
     #Second case is better or both are the same
