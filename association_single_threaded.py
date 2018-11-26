@@ -160,7 +160,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
                 result_workers, result_assignments = linear_sum_assignment(cost_array)
 
                 #Instead of assigning all worker in turn just one with best performance is chosen
-                #This method is NOT performance friendly but gives better result when no all worker are fully occupied
+                #This method is NOT performance friendly but may gives better result
                 if single_sample:
                     key = 0
                     time_min = performance_threshold
