@@ -1,6 +1,5 @@
 #Import the toolbox
 from scipy.optimize import linear_sum_assignment
-import multiprocessing as mp
 import numpy as np
 
 def association(performance, workers_limit, item_demand):
@@ -12,24 +11,11 @@ def association(performance, workers_limit, item_demand):
         if len(worker_performance) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
 
-    manager = mp.Manager()
-    association_result = manager.dict()
+    #First try, multiple sample
+    sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand)
 
-    #First try, single sample
-    first_attempt = mp.Process(target=_association_attempt, args=(0, association_result, performance, workers_limit, item_demand, True))
-    first_attempt.Daemon = True
-    first_attempt.start()
-
-    #Second try, multiple sample
-    second_attempt = mp.Process(target=_association_attempt, args=(1, association_result, performance, workers_limit, item_demand))
-    second_attempt.Daemon = True
-    second_attempt.start()
-
-    #Wait for result of both attempts
-    first_attempt.join()
-    second_attempt.join()
-    sheudle_first, work_time_first, remains_first = association_result[0]
-    sheudle_second, work_time_second, remains_second = association_result[1]
+    #Second try, single sample
+    sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand, True)
 
     #Comparing remaining items count, smaller wins
     remains_first_total = 0
@@ -56,7 +42,7 @@ def association(performance, workers_limit, item_demand):
     #Second case is better or both are the same
     return sheudle_second, work_time_second, remains_second
 
-def _association_attempt(procnum, association_result, performance_original, workers_limit, item_demand, single_sample = False):
+def _association_attempt(performance_original, workers_limit, item_demand, single_sample = False):
 
     #Utility variables
     items_count = len(item_demand)
@@ -76,7 +62,6 @@ def _association_attempt(procnum, association_result, performance_original, work
         for item in range(0, items_count):
             performance_threshold = max(performance_threshold, performance_original[worker][item])
     performance_threshold += 1
-    performance_threshold = max(performance_threshold, 1)
 
     #Copying performance array to prevent interfering into its values
     for worker_performance in performance_original:
@@ -108,8 +93,7 @@ def _association_attempt(procnum, association_result, performance_original, work
 
         #No more items to do
         if len(items_in_turn) == 0:
-            association_result[procnum] = sheudle, overworked_time, item_demand
-            return
+            return sheudle, overworked_time, item_demand
 
         #Iterating over items in turn
         while len(items_in_turn) > 0:
@@ -136,8 +120,7 @@ def _association_attempt(procnum, association_result, performance_original, work
 
             #No more free workers to do any task
             if all(limit < 0 for limit in workers_limit):
-                association_result[procnum] = sheudle, overworked_time, item_demand
-                return
+                return sheudle, overworked_time, item_demand
 
             #Generating cost array to optimise
             #Each row is list of performances of current worker with each demanded item in turn
@@ -165,8 +148,7 @@ def _association_attempt(procnum, association_result, performance_original, work
 
                 #Check for repeated situation that indicates loop stuck
                 if lockup:
-                    association_result[procnum] = sheudle, overworked_time, item_demand
-                    return
+                    return sheudle, overworked_time, item_demand
                 lockup = True
                 break
 
