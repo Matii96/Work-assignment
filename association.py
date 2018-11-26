@@ -65,12 +65,13 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
     #Copying performance array to prevent interfering into its values
     for worker_performance in performance_original:
+        worker_performance_copy = worker_performance.copy()
 
         #Check each item for <=0 values, indicating that worker can't do this
         for item in range(0, items_count):
-            if worker_performance[item] <= 0:
-                worker_performance[item] = performance_threshold
-        performance.append(worker_performance.copy())
+            if worker_performance_copy[item] <= 0:
+                worker_performance_copy[item] = performance_threshold
+        performance.append(worker_performance_copy)
 
     #Preparing array of planned activities
     for worker in workers_limit:
