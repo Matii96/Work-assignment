@@ -21,13 +21,10 @@ def association(performance, workers_limit, item_demand):
     first_attempt.start()
 
     #Second try, multiple sample
-    second_attempt = mp.Process(target=_association_attempt, args=(1, association_result, performance, workers_limit, item_demand))
-    second_attempt.Daemon = True
-    second_attempt.start()
+    _association_attempt(1, association_result, performance, workers_limit, item_demand)
 
-    #Wait for result of both attempts
+    #Wait for first try to end
     first_attempt.join()
-    second_attempt.join()
     sheudle_first, work_time_first, remains_first = association_result[0]
     sheudle_second, work_time_second, remains_second = association_result[1]
 
