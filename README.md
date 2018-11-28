@@ -7,6 +7,6 @@ Input:
     workers_limits:       [465, 180, ...]  workers work time limits
     item_demand:          [12, 7, ...]     how many each item is demanded
 Output:
-    sheudle:              [9, 8, ...]      how many each type of item each worker is ordered to prepare
+    scheudle:              [9, 8, ...]      how many each type of item each worker is ordered to prepare
     overworked_time:      [459.5, 179.2]   work time of each worker
     item_demand:          [3, 0, ...]      how many items left

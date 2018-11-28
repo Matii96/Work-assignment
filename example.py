@@ -37,24 +37,24 @@ def main():
     #Calling method
     print('Optimization has begun...')
     beginning = time()
-    sheudle, work_time, remains = association(performance, workers_limit, item_demand)
+    scheudle, work_time, remains = association(performance, workers_limit, item_demand)
     elapsed_time = time() - beginning
 
     #Displaying result
     work_time_total = 0
-    for i in range(0, len(sheudle)):
+    for i in range(0, len(scheudle)):
         work_time_total += work_time[i]
     remains_total = 0
     for item_count in remains:
         remains_total += item_count
-    print('Sheudle saved to result.txt')
+    print('scheudle saved to result.txt')
     print('Items remaining: %d' % remains_total)
     print('Total work time: %.0f' % work_time_total)
     print('Items left: %d' % remains_total)
     print('Elapsed time:    %.3fs' % elapsed_time)
 
-    #Saving sheudle to result.txt
-    np.savetxt('result.txt', np.array(sheudle), fmt='%d', delimiter='  ')
+    #Saving scheudle to result.txt
+    np.savetxt('result.txt', np.array(scheudle), fmt='%d', delimiter='  ')
 
 if __name__ == '__main__':
     main()

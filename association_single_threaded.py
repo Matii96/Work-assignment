@@ -12,25 +12,25 @@ def association(performance, workers_limit, item_demand):
             raise ValueError('Items count in performance array does not match items demand')
 
     #First try, multiple sample
-    sheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand, True)
+    scheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand, True)
 
     #Second try, single sample
-    sheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand)
+    scheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand)
 
     #Comparing remaining items count, smaller wins
     remains_first_sum = sum(remains_first)
     remains_second_sum = sum(remains_second)
     if remains_first_sum < remains_second_sum:
-        return sheudle_first, work_time_first, remains_first
+        return scheudle_first, work_time_first, remains_first
     elif remains_first_sum > remains_second_sum:
-        return sheudle_second, work_time_second, remains_second
+        return scheudle_second, work_time_second, remains_second
 
     #Comparing work times, shorter wins
     if sum(work_time_first) < sum(work_time_second):
-        return sheudle_first, work_time_first, remains_first
+        return scheudle_first, work_time_first, remains_first
 
     #Second case is better or both are the same
-    return sheudle_second, work_time_second, remains_second
+    return scheudle_second, work_time_second, remains_second
 
 def _association_attempt(performance_original, workers_limit, item_demand, single_sample = False):
 
@@ -43,7 +43,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
     result_workers_last, result_assignments_last = [], []
     overworked_time = []
     performance = []
-    sheudle = []
+    scheudle = []
 
     #Just for convenience
     #Saving highest performance value for further operations as threshold
@@ -66,10 +66,10 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
     #Preparing array of planned activities
     for worker in workers_limit:
-        worker_sheudle = []
+        worker_scheudle = []
         for item in item_demand:
-            worker_sheudle.append(0)
-        sheudle.append(worker_sheudle)
+            worker_scheudle.append(0)
+        scheudle.append(worker_scheudle)
         overworked_time.append(0)
 
     #Iterating over assignment turns
@@ -84,7 +84,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
         #No more items to do
         if len(items_in_turn) == 0:
-            return sheudle, overworked_time, item_demand
+            return scheudle, overworked_time, item_demand
 
         #Iterating over items in turn
         while len(items_in_turn) > 0:
@@ -111,7 +111,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
             #No more free workers to do any task
             if all(limit < 0 for limit in workers_limit):
-                return sheudle, overworked_time, item_demand
+                return scheudle, overworked_time, item_demand
 
             #Generating cost array to optimise
             #Each row is list of performances of current worker with each demanded item in turn
@@ -139,7 +139,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
 
                 #Check for repeated situation that indicates loop stuck
                 if lockup:
-                    return sheudle, overworked_time, item_demand
+                    return scheudle, overworked_time, item_demand
                 lockup = True
                 break
 
@@ -189,7 +189,7 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
                 if performance[current_worker][current_item] < performance_threshold:
 
                     #Adding item to worker
-                    sheudle[current_worker][current_item] += 1
+                    scheudle[current_worker][current_item] += 1
 
                     #Marking item for delete
                     items_in_turn[result_assignments[key]] = -1
