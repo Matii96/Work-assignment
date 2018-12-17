@@ -2,7 +2,7 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def association(performance, workers_limit, item_demand):
+def association(performance, workers_limit, item_demand, bid_dataset=False):
 
     #Checking passed parameters
     if len(performance) != len(workers_limit):
@@ -11,10 +11,14 @@ def association(performance, workers_limit, item_demand):
         if len(worker_performance) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
 
-    #First try, multiple sample
+    #If data is big then omit single sample method due to too long time of execution and equal or worse results
+    if bid_dataset:
+        return _association_attempt(performance, workers_limit, item_demand)
+
+    #First try, single sample
     scheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand, True)
 
-    #Second try, single sample
+    #Second try, multiple sample
     scheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand)
 
     #Comparing remaining items count, smaller wins
