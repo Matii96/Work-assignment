@@ -1,5 +1,5 @@
 #from association_single_threaded import association
-from association import association
+from association_single_threaded import association
 from time import time
 import numpy as np
 

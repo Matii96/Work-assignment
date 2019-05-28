@@ -2,42 +2,16 @@
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 
-def association(performance, workers_limit, item_demand, bid_dataset=False):
-
+def association(performance, workers_limit, item_demand):
     #Checking passed parameters
     if len(performance) != len(workers_limit):
         raise ValueError('Workers count in performance array does not match workers limits')
     for worker_performance in performance:
         if len(worker_performance) != len(item_demand):
             raise ValueError('Items count in performance array does not match items demand')
-
-    #If data is big then omit single sample method due to too long time of execution and equal or worse results
-    if bid_dataset:
-        return _association_attempt(performance, workers_limit, item_demand)
-
-    #First try, single sample
-    scheudle_first, work_time_first, remains_first = _association_attempt(performance, workers_limit, item_demand, True)
-
-    #Second try, multiple sample
-    scheudle_second, work_time_second, remains_second = _association_attempt(performance, workers_limit, item_demand)
-
-    #Comparing remaining items count, smaller wins
-    remains_first_sum = sum(remains_first)
-    remains_second_sum = sum(remains_second)
-    if remains_first_sum < remains_second_sum:
-        return scheudle_first, work_time_first, remains_first
-    elif remains_first_sum > remains_second_sum:
-        return scheudle_second, work_time_second, remains_second
-
-    #Comparing work times, shorter wins
-    if sum(work_time_first) < sum(work_time_second):
-        return scheudle_first, work_time_first, remains_first
-
-    #Second case is better or both are the same
-    return scheudle_second, work_time_second, remains_second
+    return _association_attempt(performance, workers_limit, item_demand)
 
 def _association_attempt(performance_original, workers_limit, item_demand, single_sample = False):
-
     #Utility variables
     items_count = len(item_demand)
     workers_count = len(performance_original)
@@ -162,21 +136,6 @@ def _association_attempt(performance_original, workers_limit, item_demand, singl
                 #Arrays are different, launching new optimisation
                 cost_array_last = cost_array
                 result_workers, result_assignments = linear_sum_assignment(cost_array)
-
-                #Instead of assigning all worker in turn just one with best performance is chosen
-                #This method is NOT performance friendly but may gives better result
-                if single_sample:
-                    key = 0
-                    time_min = performance_threshold
-                    for i in range(0, len(result_assignments)):
-                        current_worker = workers_in_turn[result_workers[i]]
-                        current_item = items_in_turn[result_assignments[i]]
-
-                        if performance[current_worker][current_item] < time_min:
-                            time_min = performance[current_worker][current_item]
-                            key = i
-                    result_workers = [result_workers[key]]
-                    result_assignments = [result_assignments[key]]
 
                 #Saving data from current turn for the next one
                 result_workers_last, result_assignments_last = result_workers, result_assignments
